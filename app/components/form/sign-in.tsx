@@ -1,7 +1,7 @@
 import { useFetcher } from "@remix-run/react";
 import React, { useEffect } from "react";
 import { toast } from "sonner";
-import { Button, buttonVariants } from "~/components/ui/button";
+import { Button } from "~/components/ui/button";
 import {
     Card,
     CardContent,

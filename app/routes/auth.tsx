@@ -42,7 +42,7 @@ async function doAuth(username: any, password: any) {
         })
         if (response.statusText == 'Created' || response.statusText == 'OK') {
             const cookie = await sessionCookie.serialize(response.data.id_token);
-            const userInfo = await httpRequest(response.data.id_token, 'http://localhost:4300/api/', 'account', 'GET')
+            const userInfo = await httpRequest(response.data.id_token, process.env.PUBLIC_API!, 'account', 'GET')
             const state = await stateCookie.serialize(userInfo);
             
             return redirect('/dashboard', {

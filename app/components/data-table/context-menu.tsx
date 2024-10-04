@@ -3,32 +3,40 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuShortcut, 
 import { PencilRuler, Trash2 } from "lucide-react";
 
 interface ContextMenuWrapperProps {
-    children: ReactNode;
-    onEdit?: () => void;
-    onDelete?: () => void;
-    contextMenu?: boolean;
-  }
-  
-  const ContextMenuWrapper: React.FC<ContextMenuWrapperProps> = ({
-    children,
-    onEdit,
-    onDelete,
-    contextMenu = true,
-  }) => {
-    if(!contextMenu) {
-        return (
-            <>{children}</>
-        )
-    }
+  children: ReactNode;
+  onEdit?: () => void;
+  onDelete?: () => void;
+  contextMenu?: boolean;
+}
+
+const ContextMenuWrapper: React.FC<ContextMenuWrapperProps> = ({
+  children,
+  onEdit,
+  onDelete,
+  contextMenu = true,
+}) => {
+  if (!contextMenu) {
     return (
-      <ContextMenu>
-        <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
-        <ContextMenuContent>
-          <ContextMenuItem inset onClick={onEdit} className="text-xs">Edit <ContextMenuShortcut><PencilRuler size={14} /></ContextMenuShortcut></ContextMenuItem>
-          <ContextMenuItem inset onClick={onDelete} className="text-xs">Delete <ContextMenuShortcut><Trash2 size={14}/></ContextMenuShortcut></ContextMenuItem>
-        </ContextMenuContent>
-      </ContextMenu>
-    );
-  };
-  
-  export default ContextMenuWrapper;
+      <>{children}</>
+    )
+  }
+  return (
+    <ContextMenu>
+      <ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
+      <ContextMenuContent>
+        <ContextMenuItem
+          inset
+          onClick={onEdit}
+          className="-ml-6 text-xs">
+          Edit
+          <ContextMenuShortcut>
+            <PencilRuler size={14} />
+          </ContextMenuShortcut>
+        </ContextMenuItem>
+        <ContextMenuItem inset onClick={(e) => { e.stopPropagation(); onDelete }} className="-ml-6 text-xs">Delete <ContextMenuShortcut><Trash2 size={14} /></ContextMenuShortcut></ContextMenuItem>
+      </ContextMenuContent>
+    </ContextMenu>
+  );
+};
+
+export default ContextMenuWrapper;

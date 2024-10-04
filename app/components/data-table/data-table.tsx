@@ -23,13 +23,14 @@ import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } 
 import ContextMenuWrapper from "./context-menu"
 import { ScrollArea, ScrollBar } from "../ui/scroll-area"
 import { PlusIcon } from "lucide-react"
+import { DataTableColumnHeader } from "./header-table"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
     data: TData[]
     onEdit?: (item: any) => void;
     onDelete?: (item: any) => void;
-    onCreate?: (item: any) => void
+    onCreate?: any
     allowAdding?: boolean;
     contextMenu?: boolean;
 }
@@ -55,7 +56,6 @@ export function DataTable<TData, TValue>({
             sorting
         }
     })
-
     return (
         <div>
             <div className="flex items-center justify-between py-2">
@@ -94,7 +94,8 @@ export function DataTable<TData, TValue>({
                                                 {header.isPlaceholder
                                                     ? null
                                                     : flexRender(
-                                                        header.column.columnDef.header,
+                                                        <DataTableColumnHeader column={header.column} title={header.column.columnDef.header as string} />,
+                                                        // header.column.columnDef.header,
                                                         header.getContext()
                                                     )}
                                             </TableHead>

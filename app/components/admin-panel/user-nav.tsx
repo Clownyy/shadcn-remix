@@ -19,6 +19,7 @@ import {
 } from "~/components/ui/dropdown-menu";
 import { Link, useFetcher } from "@remix-run/react";
 import { getInitials } from "~/lib/utils";
+
 export function UserNav({ userInfo }: any) {
     let fetcher = useFetcher();
     return (
