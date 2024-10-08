@@ -24,6 +24,8 @@ import ContextMenuWrapper from "./context-menu"
 import { ScrollArea, ScrollBar } from "../ui/scroll-area"
 import { PlusIcon } from "lucide-react"
 import { DataTableColumnHeader } from "./header-table"
+import { Switch } from "../ui/switch"
+import { boolean } from "zod"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -118,7 +120,9 @@ export function DataTable<TData, TValue>({
                                         >
                                             {row.getVisibleCells().map((cell) => (
                                                 <TableCell key={cell.id} className="whitespace-nowrap overflow-hidden text-ellipsis">
-                                                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                                                    {typeof cell.getValue() === 'boolean' ?
+                                                        flexRender(<Switch checked={Boolean(cell.getValue())} /> , cell.getContext())
+                                                        : flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                 </TableCell>
                                             ))}
                                         </TableRow>

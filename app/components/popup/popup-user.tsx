@@ -10,20 +10,20 @@ import { Input } from "../ui/input"
 interface PopupProperties {
     open: any,
     onOpen: any,
+    handleCreate: any,
     data: any
 }
 
-// const regex = RegExp(process.env.PASSWORD_REGEX!)
 export function PopupUser({
     open,
     onOpen,
+    handleCreate,
     data = {}
 }: PopupProperties) {
     const fetcher = useFetcher();
 
     const handleSubmit = async (data: any) => {
-        console.log(data)
-        fetcher.submit(data, { method: 'post', action: '/user' })
+        handleCreate(data);
     }
 
     const formSchema = z.object({

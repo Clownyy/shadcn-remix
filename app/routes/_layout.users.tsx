@@ -1,5 +1,5 @@
 import { json, LoaderFunction } from "@remix-run/node";
-import { useLoaderData } from "@remix-run/react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 import { ContentLayout } from "~/components/admin-panel/content-layout";
 import { Card, CardContent, CardTitle } from "~/components/ui/card";
 import { withAuth } from "~/lib/auth";
@@ -8,7 +8,9 @@ import { ColumnDef } from "@tanstack/react-table"
 import { formatDateTime, httpRequest } from "~/lib/helper";
 import { DataTable } from "~/components/data-table/data-table";
 import { PopupUser } from "~/components/popup/popup-user";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { boolean } from "zod";
 
 export const loader: LoaderFunction = withAuth(async ({ request }) => {
     const cookieHeader = request.headers.get("Cookie");
@@ -57,12 +59,6 @@ export const columns: ColumnDef<User>[] = [
     {
         accessorKey: "activated",
         header: "Activated",
-        cell: ({row}) => {
-            if(row.original.resetKey){
-                return "false";
-            }
-            return "true";
-        }
     },
     {
         accessorKey: "createdAt",
@@ -81,6 +77,7 @@ export const columns: ColumnDef<User>[] = [
 ]
 
 export default function Users() {
+    const fetcher = useFetcher();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [data, setData] = useState({});
 
@@ -106,8 +103,38 @@ export default function Users() {
 
     const handleDelete = (row: any) => {
         var data = row.original
-        console.log("delete: ", data)
+        data.actionType = 'DELETE';
+        fetcher.submit(data, { method: 'post', action: '/user' })
     }
+
+    const handleCreate = (data: any) => {
+        if(data.id != null && data.id != 0) {
+            data.actionType = 'UPDATE';
+        } else {
+            data.actionType = 'CREATE';
+        }
+        fetcher.submit(data, { method: 'post', action: '/user' })
+        handleCloseDialog();
+    }
+
+    // const isSubmitting = fetcher.state === "submitting";
+    // if(isSubmitting) {
+    //     console.log("loading")
+    // }
+
+	useEffect(() => {
+		if (fetcher.state == "idle" && fetcher.data) {
+            if(fetcher.data.error) {
+                toast.error(fetcher.data.status, {
+                    description: fetcher.data.error
+                })
+            } else {
+                toast.success(fetcher.data.status, {
+                    description: fetcher.data.success
+                })
+            }
+		}
+	}, [fetcher])
 
     return (
         <>
@@ -127,7 +154,7 @@ export default function Users() {
                         />
                         {
                             isDialogOpen &&
-                            <PopupUser open={isDialogOpen} onOpen={handleCloseDialog} data={data} />
+                            <PopupUser open={isDialogOpen} onOpen={handleCloseDialog} data={data} handleCreate={handleCreate} />
                         }
                     </CardContent>
                 </Card>

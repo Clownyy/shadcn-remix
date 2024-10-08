@@ -23,7 +23,7 @@ type Menu = {
 };
 
 type Group = {
-  groupLabel: string;
+  groupLabel: any;
   menus: Menu[];
 };
 

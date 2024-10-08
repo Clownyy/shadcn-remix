@@ -16,8 +16,8 @@ import { Toaster } from "sonner";
 
 export const meta: MetaFunction = () => {
     return [
-        { title: "Wedding - Back Office" },
-        { name: "description", content: "Welcome to Remix!" },
+        { title: "Vitation - Back Office" },
+        { name: "description", content: "Welcome to Vitation!" },
     ];
 };
 

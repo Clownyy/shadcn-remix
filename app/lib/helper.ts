@@ -22,7 +22,7 @@ const postRequest = async (token: string, baseUrl: string, url: string, body: an
 };
 
 const putRequest = async (token: string, baseUrl: string, url: string, body: any) => {
-    const response = await axios.put(baseUrl + url, body, {
+    const response = await axios.patch(baseUrl + url, body, {
         headers: {
             "Content-Type": "application/json",
             "Access-Control-Allow-Origin": "*",
@@ -48,7 +48,7 @@ export const httpRequest = async (token: string, baseUrl: string, url: string, m
             return getRequest(token, baseUrl, url);
         case "POST":
             return postRequest(token, baseUrl, url, body);
-        case "PUT":
+        case "PATCH":
             return putRequest(token, baseUrl, url, body);
         case "DELETE":
             return deleteRequest(token, baseUrl, url, body);

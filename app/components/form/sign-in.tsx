@@ -33,7 +33,7 @@ export default function SignInForm() {
     return (
         <Card>
             <CardHeader>
-                <CardTitle>Welcome,</CardTitle>
+                <CardTitle>Welcome to Vitation,</CardTitle>
                 <CardDescription>
                     Sign in to continue
                 </CardDescription>

@@ -1,41 +1,33 @@
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
+import { useLoaderData } from "@remix-run/react";
 import axios from "axios";
-import { toast } from "sonner";
+import { DarkModeToggle } from "~/components/dark-mode-toggle";
+import ConfirmationForm from "~/components/form/confirm";
 import { withoutAuth } from "~/lib/auth";
 import { httpRequest } from "~/lib/helper";
-import LoginPage from "~/pages/login";
 import { sessionCookie, stateCookie } from "~/sessions";
 
-export const loader: LoaderFunction = withoutAuth(async ({ request }) => {
-
-    return null;
+export const loader: LoaderFunction = withoutAuth(async ({ params }) => {
+    return params;
 });
-
 
 export const action: ActionFunction = async ({ request }) => {
     const formData = await request.formData();
-    const actionType = formData.get("_action");
-    const username = formData.get("username");
+    const key = formData.get("key");
     const password = formData.get("password");
-    const email = formData.get("email");
-    const firstName = formData.get("firstName")
-    const lastName = formData.get("lastName")
+    const confirmPassword = formData.get("confirmPassword");
 
-    // if (actionType === "signIn") {
-        return await doAuth(username, password);
-    // } else {
-    //     return await doRegis(username, email, firstName, lastName);
-    // }
+    return await doConfirm(key, password, confirmPassword);
 }
 
-async function doAuth(username: any, password: any) {
+async function doConfirm(key: any, password: any, confirmPassword: any) {
     try {
         let data = {
-            username: username,
             password: password,
-            rememberMe: false
+            confirmPassword: confirmPassword,
+            key: key
         }
-        let response = await axios.post(`${process.env.PUBLIC_API}auth`, data, {
+        let response = await axios.post(`${process.env.PUBLIC_API}auth/set-password`, data, {
             headers: {
                 "Content-Type": "application/json",
             }
@@ -44,7 +36,7 @@ async function doAuth(username: any, password: any) {
             const cookie = await sessionCookie.serialize(response.data.id_token);
             const userInfo = await httpRequest(response.data.id_token, process.env.PUBLIC_API!, 'account', 'GET')
             const state = await stateCookie.serialize(userInfo);
-            
+
             return redirect('/dashboard', {
                 headers: {
                     "Set-Cookie": `${cookie}, ${state}`,
@@ -59,16 +51,19 @@ async function doAuth(username: any, password: any) {
         }
         return json({ error: 'Failed to connect to server', status: 500 }, { status: 500 })
     }
-}
 
-async function doRegis(username: any, email: any, firstName: any, lastName: any) {
-    console.log("doRegis: " + username + " " + email + " " + firstName + " " + lastName)
 }
+export default function Confirmation() {
+    const params = useLoaderData();
 
-export default function Auth() {
     return (
         <div className="w-full h-screen flex justify-center items-center">
-            <LoginPage />
+            <div className="fixed top-8 right-8">
+                <DarkModeToggle />
+            </div>
+            <div className="w-[400px]">
+                <ConfirmationForm token={params} />
+            </div>
         </div>
     )
 }
