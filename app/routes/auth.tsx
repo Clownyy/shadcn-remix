@@ -2,7 +2,7 @@ import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node"
 import axios from "axios";
 import { toast } from "sonner";
 import { withoutAuth } from "~/lib/auth";
-import { httpRequest } from "~/lib/helper";
+import { httpRequest } from "~/lib/httpRequest";
 import LoginPage from "~/pages/login";
 import { sessionCookie, stateCookie } from "~/sessions";
 

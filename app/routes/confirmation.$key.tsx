@@ -4,7 +4,7 @@ import axios from "axios";
 import { DarkModeToggle } from "~/components/dark-mode-toggle";
 import ConfirmationForm from "~/components/form/confirm";
 import { withoutAuth } from "~/lib/auth";
-import { httpRequest } from "~/lib/helper";
+import { httpRequest } from "~/lib/httpRequest";
 import { sessionCookie, stateCookie } from "~/sessions";
 
 export const loader: LoaderFunction = withoutAuth(async ({ params }) => {

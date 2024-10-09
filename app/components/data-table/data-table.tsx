@@ -19,13 +19,12 @@ import {
 import { Button } from "../ui/button"
 import React from "react"
 import { DataTablePagination } from "./pagination-table"
-import { ContextMenu, ContextMenuContent, ContextMenuItem, ContextMenuTrigger } from "../ui/context-menu"
 import ContextMenuWrapper from "./context-menu"
 import { ScrollArea, ScrollBar } from "../ui/scroll-area"
 import { PlusIcon } from "lucide-react"
 import { DataTableColumnHeader } from "./header-table"
 import { Switch } from "../ui/switch"
-import { boolean } from "zod"
+import { Checkbox } from "../ui/checkbox"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -33,6 +32,8 @@ interface DataTableProps<TData, TValue> {
     onEdit?: (item: any) => void;
     onDelete?: (item: any) => void;
     onCreate?: any
+    allowSelection?: boolean;
+    onSelectedRows?: any;
     allowAdding?: boolean;
     contextMenu?: boolean;
 }
@@ -43,21 +44,61 @@ export function DataTable<TData, TValue>({
     onEdit,
     onDelete,
     onCreate,
+    allowSelection = false,
+    onSelectedRows,
     allowAdding = true,
     contextMenu,
 }: DataTableProps<TData, TValue>) {
+    const tableColumns = React.useMemo(() => {
+        if (!allowSelection) return columns
+        return [
+            {
+                id: "select",
+                header: ({ table }) => (
+                    <Checkbox
+                        checked={
+                            table.getIsAllPageRowsSelected() ||
+                            (table.getIsSomePageRowsSelected() && "indeterminate")
+                        }
+                        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+                        aria-label="Select all"
+                    />
+                ),
+                cell: ({ row }) => (
+                    <Checkbox
+                        checked={row.getIsSelected()}
+                        onCheckedChange={(value) => row.toggleSelected(!!value)}
+                        aria-label="Select row"
+                    />
+                ),
+                enableSorting: false,
+                enableHiding: false,
+            },
+            ...columns,
+        ]
+    }, [allowSelection, columns])
+
     const [sorting, setSorting] = React.useState<SortingState>([])
+    const [rowSelection, setRowSelection] = React.useState({})
     const table = useReactTable({
         data,
-        columns,
+        columns: tableColumns,
         getCoreRowModel: getCoreRowModel(),
         getPaginationRowModel: getPaginationRowModel(),
         onSortingChange: setSorting,
         getSortedRowModel: getSortedRowModel(),
+        onRowSelectionChange: setRowSelection,
         state: {
-            sorting
+            sorting,
+            rowSelection
         }
     })
+
+    React.useEffect(() => {
+        const selectedRows = Object.keys(rowSelection).map((key: any) => data[key]);
+        onSelectedRows?.(selectedRows);
+    }, [rowSelection, data, onSelectedRows]);
+
     return (
         <div>
             <div className="flex items-center justify-between py-2">
@@ -95,9 +136,11 @@ export function DataTable<TData, TValue>({
                                             <TableHead key={header.id}>
                                                 {header.isPlaceholder
                                                     ? null
-                                                    : flexRender(
+                                                    : header.id != "select" ? flexRender(
                                                         <DataTableColumnHeader column={header.column} title={header.column.columnDef.header as string} />,
-                                                        // header.column.columnDef.header,
+                                                        header.getContext()
+                                                    ) : flexRender(
+                                                        header.column.columnDef.header,
                                                         header.getContext()
                                                     )}
                                             </TableHead>
@@ -121,7 +164,7 @@ export function DataTable<TData, TValue>({
                                             {row.getVisibleCells().map((cell) => (
                                                 <TableCell key={cell.id} className="whitespace-nowrap overflow-hidden text-ellipsis">
                                                     {typeof cell.getValue() === 'boolean' ?
-                                                        flexRender(<Switch checked={Boolean(cell.getValue())} /> , cell.getContext())
+                                                        flexRender(<Switch checked={Boolean(cell.getValue())} />, cell.getContext())
                                                         : flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                 </TableCell>
                                             ))}

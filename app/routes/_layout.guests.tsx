@@ -1,17 +1,16 @@
 import { json, LoaderFunction } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { ContentLayout } from "~/components/admin-panel/content-layout";
-import { Card, CardContent, CardTitle } from "~/components/ui/card";
+import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
 import { withAuth } from "~/lib/auth";
 import { sessionCookie, stateCookie } from "~/sessions";
 import { ColumnDef } from "@tanstack/react-table"
-import { formatDateTime } from "~/lib/helper";
 import { DataTable } from "~/components/data-table/data-table";
-import { PopupUser } from "~/components/popup/popup-user";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { boolean } from "zod";
 import { httpRequest } from "~/lib/httpRequest";
+import { PopupGuest } from "~/components/popup/popup-guest";
+import { Button } from "~/components/ui/button";
 
 export const loader: LoaderFunction = withAuth(async ({ request }) => {
     const cookieHeader = request.headers.get("Cookie");
@@ -20,71 +19,38 @@ export const loader: LoaderFunction = withAuth(async ({ request }) => {
     const jwt = await sessionCookie.parse(cookieHeader);
 
     try {
-        const usersData = await httpRequest(jwt, process.env.PUBLIC_API!, 'users');
-        return json({ userInfo, usersData });
+        const guestsData = await httpRequest(jwt, process.env.PUBLIC_API!, `guests/get-by-user/${userInfo.id}`);
+        return json({ userInfo, guestsData });
     } catch (error) {
-        return json({ userInfo, ...{} });
+        return json({ userInfo, guestsData: [] });
     }
 });
 
-export type User = {
+export type Guest = {
     id: number,
-    login: string,
-    firstName: string,
-    lastName: string,
-    email: string,
-    imageUrl: string,
-    activated: boolean,
-    resetKey: string,
-    createdAt: Date,
-    updatedAt: Date,
+    guestName: string,
+    phoneNumber: string,
 }
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<Guest>[] = [
     {
-        accessorKey: "login",
-        header: "Username"
+        accessorKey: "guestName",
+        header: "Guest Name"
     },
     {
-        accessorKey: "firstName",
-        header: "First Name"
-    },
-    {
-        accessorKey: "lastName",
-        header: "Last Name"
-    },
-    {
-        accessorKey: "email",
-        header: "Email"
-    },
-    {
-        accessorKey: "activated",
-        header: "Activated",
-    },
-    {
-        accessorKey: "createdAt",
-        header: "Created Date",
-        cell: ({ row }) => {
-            return formatDateTime(row.original.createdAt);
-        },
-    },
-    {
-        accessorKey: "updatedAt",
-        header: "Last Modified Date",
-        cell: ({ row }) => {
-            return formatDateTime(row.original.updatedAt);
-        },
+        accessorKey: "phoneNumber",
+        header: "Phone Number"
     }
 ]
 
-export default function Users() {
+export default function Guests() {
     const fetcher = useFetcher();
-    const [isDialogOpen, setIsDialogOpen] = useState(false);
+    const [isDialogGuestOpen, setIsDialogGuestOpen] = useState(false);
     const [data, setData] = useState({});
 
     const useData = useLoaderData();
     const userInfo = useData?.userInfo;
-    const usersData = useData?.usersData;
+    const guestsData = useData?.guestsData;
 
     const handleEdit = (row: any) => {
         handleOpenDialog();
@@ -92,12 +58,12 @@ export default function Users() {
     }
 
     const handleOpenDialog = () => {
-        setIsDialogOpen(true);
+        setIsDialogGuestOpen(true);
         document.body.style.pointerEvents = "auto";
     };
 
     const handleCloseDialog = () => {
-        setIsDialogOpen(false);
+        setIsDialogGuestOpen(false);
         setData({});
         document.body.style.pointerEvents = "auto";
     };
@@ -105,27 +71,39 @@ export default function Users() {
     const handleDelete = (row: any) => {
         var data = row.original
         data.actionType = 'DELETE';
-        fetcher.submit(data, { method: 'post', action: '/user' })
+        fetcher.submit(data, { method: 'post', action: '/guest' })
     }
 
     const handleCreate = (data: any) => {
-        if(data.id != null && data.id != 0) {
+        if (data.id != null && data.id != 0) {
             data.actionType = 'UPDATE';
         } else {
             data.actionType = 'CREATE';
         }
-        fetcher.submit(data, { method: 'post', action: '/user' })
+        fetcher.submit(data, { method: 'post', action: '/guest' })
         handleCloseDialog();
     }
+
+    // const onSelectedRow = (data: any) => {
+    //     setSelectedRows(data);
+    // }
+
+    // async function generateLink() {
+    //     let data = selectedRows;
+    //     let baseurl = 'http://www.vitation.co.id/ines-iqbal/' //sample
+    //     for(let guest of data) {
+    //         let url = baseurl + encodeURIComponent(guest?.guestName)
+    //     }
+    // }
 
     // const isSubmitting = fetcher.state === "submitting";
     // if(isSubmitting) {
     //     console.log("loading")
     // }
 
-	useEffect(() => {
-		if (fetcher.state == "idle" && fetcher.data) {
-            if(fetcher.data.error) {
+    useEffect(() => {
+        if (fetcher.state == "idle" && fetcher.data) {
+            if (fetcher.data.error) {
                 toast.error(fetcher.data.status, {
                     description: fetcher.data.error
                 })
@@ -134,20 +112,20 @@ export default function Users() {
                     description: fetcher.data.success
                 })
             }
-		}
-	}, [fetcher])
+        }
+    }, [fetcher])
 
     return (
         <>
-            <ContentLayout title="Users" userInfo={userInfo}>
+            <ContentLayout title="Guests" userInfo={userInfo}>
                 <Card className="rounded-lg border-none mt-6">
                     <CardContent className="p-6">
                         <CardTitle>
-                            <span className="text-2xl font-semibold">Users</span>
+                            <span className="text-2xl font-semibold">Guests</span>
                         </CardTitle>
                         <DataTable
                             columns={columns}
-                            data={usersData}
+                            data={guestsData}
                             onEdit={handleEdit}
                             onDelete={handleDelete}
                             onCreate={handleOpenDialog}
@@ -155,10 +133,13 @@ export default function Users() {
                             contextMenu={true}
                         />
                         {
-                            isDialogOpen &&
-                            <PopupUser open={isDialogOpen} onOpen={handleCloseDialog} data={data} handleCreate={handleCreate} />
+                            isDialogGuestOpen &&
+                            <PopupGuest open={isDialogGuestOpen} onOpen={handleCloseDialog} data={data} handleCreate={handleCreate} />
                         }
                     </CardContent>
+                    {/* <CardFooter  className="sm:justify-end">
+                        <Button onClick={generateLink} variant={"default"}>Bulk Generate Invitation</Button>
+                    </CardFooter> */}
                 </Card>
             </ContentLayout>
         </>

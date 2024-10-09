@@ -48,10 +48,10 @@ export default function SignInForm() {
                     </div>
                     <div className="space-y-1">
                         <Label htmlFor="password">Password</Label>
-                        <Input type="password" name="password" placeholder="password" />
+                        <Input type="password" name="password" placeholder="Password" />
                     </div>
                 </CardContent>
-                <CardFooter>
+                <CardFooter className="sm:justify-end">
                     <Button type="submit">Login</Button>
                 </CardFooter>
             </fetcher.Form>

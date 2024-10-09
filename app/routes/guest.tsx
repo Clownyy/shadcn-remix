@@ -1,24 +1,22 @@
 import { ActionFunction, json, redirect } from "@remix-run/node";
 import { httpRequest } from "~/lib/httpRequest";
-import { sessionCookie } from "~/sessions";
+import { sessionCookie, stateCookie } from "~/sessions";
 
 export const action: ActionFunction = async ({ request }) => {
     const cookieHeader = request.headers.get("Cookie");
     const jwt = await sessionCookie.parse(cookieHeader);
+    const userInfo = await stateCookie.parse(cookieHeader);
 
     const formData = await request.formData();
     const actionType = formData.get("actionType");
     const id = formData.get("id");
-    const email = formData.get("email");
-    const login = formData.get("login");
-    const firstName = formData.get("firstName");
-    const lastName = formData.get("lastName")
+    const guestName = formData.get("guestName");
+    const phoneNumber = formData.get("phoneNumber");
 
     let data = {
-        email: email,
-        login: login,
-        firstName: firstName,
-        lastName: lastName
+        guestName: guestName,
+        phoneNumber: phoneNumber,
+        userId: userInfo.id
     }
 
     switch (actionType) {
@@ -35,8 +33,8 @@ export const action: ActionFunction = async ({ request }) => {
 
 async function doDelete(jwt: any, id: any) {
     try {
-        let response = await httpRequest(jwt, process.env.PUBLIC_API!, "users", "DELETE", id)
-        return json({ success: "User successfully deleted!", status: 200 }, { status: 200 })
+        let response = await httpRequest(jwt, process.env.PUBLIC_API!, "guests", "DELETE", id)
+        return json({ success: "Guest successfully deleted!", status: 200 }, { status: 200 })
     } catch (err) {
         return json({ error: err, status: 500 }, { status: 500 })
     }
@@ -44,8 +42,8 @@ async function doDelete(jwt: any, id: any) {
 
 async function doCreate(jwt: any, data: any) {
     try {
-        let response = await httpRequest(jwt, process.env.PUBLIC_API!, "users/createUser", "POST", data)
-        return json({ success: "User successfully created!", status: 200 }, { status: 200 })
+        let response = await httpRequest(jwt, process.env.PUBLIC_API!, "guests", "POST", data)
+        return json({ success: "Guest successfully created!", status: 200 }, { status: 200 })
     } catch (err) {
         return json({ error: err?.message, status: err?.status }, { status: err?.status })
     }
@@ -53,13 +51,13 @@ async function doCreate(jwt: any, data: any) {
 
 async function doUpdate(jwt: any, data: any, id: any) {
     try {
-        let response = await httpRequest(jwt, process.env.PUBLIC_API!, `users/${id}`, "PATCH", data)
-        return json({ success: "User successfully updated!", status: 200 }, { status: 200 })
+        let response = await httpRequest(jwt, process.env.PUBLIC_API!, `guests/${id}`, "PATCH", data)
+        return json({ success: "Guest successfully updated!", status: 200 }, { status: 200 })
     } catch (err) {
         return json({ error: err?.message, status: err?.status }, { status: err?.status })
     }
 }
 
-export default function User() {
+export default function Guest() {
     return (<></>);
 }
