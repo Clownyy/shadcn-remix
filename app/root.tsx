@@ -8,10 +8,9 @@ import {
     useLoaderData,
 } from "@remix-run/react";
 import "./tailwind.css";
-import { LinksFunction, LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { themeSessionResolver } from "./sessions.server";
 import { PreventFlashOnWrongTheme, ThemeProvider, useTheme } from "remix-themes";
-import { DarkModeToggle } from "./components/dark-mode-toggle";
 import { Toaster } from "sonner";
 
 export const meta: MetaFunction = () => {

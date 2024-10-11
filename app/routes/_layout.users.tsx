@@ -10,9 +10,13 @@ import { DataTable } from "~/components/data-table/data-table";
 import { PopupUser } from "~/components/popup/popup-user";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { boolean } from "zod";
 import { httpRequest } from "~/lib/httpRequest";
+import { Response, User } from "~/type/types";
 
+type LoaderData = {
+    userInfo: User;
+    usersData: User[];
+}
 export const loader: LoaderFunction = withAuth(async ({ request }) => {
     const cookieHeader = request.headers.get("Cookie");
     const userInfo = await stateCookie.parse(cookieHeader);
@@ -21,24 +25,11 @@ export const loader: LoaderFunction = withAuth(async ({ request }) => {
 
     try {
         const usersData = await httpRequest(jwt, process.env.PUBLIC_API!, 'users');
-        return json({ userInfo, usersData });
+        return json({ userInfo, usersData: usersData });
     } catch (error) {
-        return json({ userInfo, ...{} });
+        return json({ userInfo, usersData: [] });
     }
 });
-
-export type User = {
-    id: number,
-    login: string,
-    firstName: string,
-    lastName: string,
-    email: string,
-    imageUrl: string,
-    activated: boolean,
-    resetKey: string,
-    createdAt: Date,
-    updatedAt: Date,
-}
 
 export const columns: ColumnDef<User>[] = [
     {
@@ -78,11 +69,11 @@ export const columns: ColumnDef<User>[] = [
 ]
 
 export default function Users() {
-    const fetcher = useFetcher();
+    const fetcher = useFetcher<Response>();
     const [isDialogOpen, setIsDialogOpen] = useState(false);
     const [data, setData] = useState({});
 
-    const useData = useLoaderData();
+    const useData = useLoaderData<LoaderData>();
     const userInfo = useData?.userInfo;
     const usersData = useData?.usersData;
 

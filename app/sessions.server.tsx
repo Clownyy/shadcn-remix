@@ -8,6 +8,7 @@ const sessionStorage = createCookieSessionStorage({
     name: "theme",
     path: "/",
     httpOnly: true,
+    secure: isProduction,
     sameSite: "lax",
     secrets: ["secret"],
   },

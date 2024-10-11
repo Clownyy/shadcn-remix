@@ -15,4 +15,10 @@ export default defineConfig({
     }),
     tsconfigPaths(),
   ],
+  build: {
+    outDir: "dist"
+  },
+  server: {
+    port: 3000
+  }
 });

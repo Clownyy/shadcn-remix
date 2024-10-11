@@ -1,16 +1,21 @@
 import { json, LoaderFunction } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { ContentLayout } from "~/components/admin-panel/content-layout";
-import { Card, CardContent, CardFooter, CardTitle } from "~/components/ui/card";
+import { Card, CardContent, CardTitle } from "~/components/ui/card";
 import { withAuth } from "~/lib/auth";
 import { sessionCookie, stateCookie } from "~/sessions";
 import { ColumnDef } from "@tanstack/react-table"
 import { DataTable } from "~/components/data-table/data-table";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { httpRequest } from "~/lib/httpRequest";
 import { PopupGuest } from "~/components/popup/popup-guest";
-import { Button } from "~/components/ui/button";
+import { Guest, Response, User } from "~/type/types";
+
+type LoaderData = {
+    guestData: Guest[];
+    userInfo: User;
+}
 
 export const loader: LoaderFunction = withAuth(async ({ request }) => {
     const cookieHeader = request.headers.get("Cookie");
@@ -20,17 +25,11 @@ export const loader: LoaderFunction = withAuth(async ({ request }) => {
 
     try {
         const guestsData = await httpRequest(jwt, process.env.PUBLIC_API!, `guests/get-by-user/${userInfo.id}`);
-        return json({ userInfo, guestsData });
+        return json({ userInfo, guestData: guestsData });
     } catch (error) {
-        return json({ userInfo, guestsData: [] });
+        return json({ userInfo, guestData: [] });
     }
 });
-
-export type Guest = {
-    id: number,
-    guestName: string,
-    phoneNumber: string,
-}
 
 export const columns: ColumnDef<Guest>[] = [
     {
@@ -44,13 +43,13 @@ export const columns: ColumnDef<Guest>[] = [
 ]
 
 export default function Guests() {
-    const fetcher = useFetcher();
+    const fetcher = useFetcher<Response>();
     const [isDialogGuestOpen, setIsDialogGuestOpen] = useState(false);
     const [data, setData] = useState({});
 
-    const useData = useLoaderData();
+    const useData = useLoaderData<LoaderData>();
     const userInfo = useData?.userInfo;
-    const guestsData = useData?.guestsData;
+    const guestsData = useData?.guestData;
 
     const handleEdit = (row: any) => {
         handleOpenDialog();

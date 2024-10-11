@@ -1,11 +1,14 @@
-import { Avatar, AvatarImage, Image } from "@radix-ui/react-avatar";
 import { json, LoaderFunction } from "@remix-run/node";
-import { Link, useLoaderData } from "@remix-run/react";
+import { useLoaderData } from "@remix-run/react";
 import { ContentLayout } from "~/components/admin-panel/content-layout";
-import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "~/components/ui/breadcrumb";
 import { Card, CardContent } from "~/components/ui/card";
 import { withAuth } from "~/lib/auth";
 import { stateCookie } from "~/sessions";
+import { User } from "~/type/types";
+
+type LoaderData = {
+    userInfo: User;
+}
 
 export const loader: LoaderFunction = withAuth(async ({ request }) => {
     const cookieHeader = request.headers.get("Cookie");
@@ -15,8 +18,8 @@ export const loader: LoaderFunction = withAuth(async ({ request }) => {
 });
 
 export default function Dashboard() {
-    const useData = useLoaderData();
-    const userInfo = useData?.userInfo;
+    const useData = useLoaderData<LoaderData>();
+    const userInfo = useData.userInfo;
 
     return (
         <ContentLayout title="Dashboard" userInfo={userInfo}>

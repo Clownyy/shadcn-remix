@@ -1,4 +1,4 @@
-import { ActionFunction, json, redirect } from "@remix-run/node";
+import { ActionFunction, json } from "@remix-run/node";
 import { httpRequest } from "~/lib/httpRequest";
 import { sessionCookie } from "~/sessions";
 
@@ -14,13 +14,13 @@ export const action: ActionFunction = async ({ request }) => {
     const firstName = formData.get("firstName");
     const lastName = formData.get("lastName")
 
-    let data = {
+    const data = {
         email: email,
         login: login,
         firstName: firstName,
         lastName: lastName
     }
-
+    
     switch (actionType) {
         case "CREATE":
             return await doCreate(jwt, data)
