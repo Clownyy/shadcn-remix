@@ -1,5 +1,5 @@
-import { useFetcher } from "@remix-run/react";
-import React, { useEffect } from "react";
+import { redirect, useFetcher, useNavigate } from "@remix-run/react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "~/components/ui/button";
 import {
@@ -12,23 +12,36 @@ import {
 } from "~/components/ui/card"
 import { Input } from "~/components/ui/input"
 import { Label } from "~/components/ui/label"
+import { Response } from "~/type/types";
+import { useLoading } from "../../hooks/loading-context";
 
 export default function SignInForm() {
-    const fetcher = useFetcher()
+    const fetcher = useFetcher<Response>()
+
+    const { setLoading } = useLoading();
+    const { loading } = useLoading();
 
     useEffect(() => {
         if (fetcher.state == "idle" && fetcher.data) {
-            toast.error(fetcher.data.status, {
-                description: fetcher.data.error
-            })
+            if (fetcher.data.error) {
+                toast.error(fetcher.data.status, {
+                    description: fetcher.data.error
+                })
+                setLoading(false);
+            } else if (fetcher.data.success) {
+                toast.success(fetcher.data.status, {
+                    description: fetcher.data.success
+                })
+            }
         }
-    })
-    
+    }, [fetcher])
+
     const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
 
         const formData = new FormData(event.currentTarget);
         fetcher.submit(formData, { method: 'post', action: '/auth' })
+        setLoading(true);
     }
     return (
         <Card>
@@ -52,7 +65,7 @@ export default function SignInForm() {
                     </div>
                 </CardContent>
                 <CardFooter className="sm:justify-end">
-                    <Button type="submit">Login</Button>
+                    <Button type="submit" disabled={fetcher.state == "submitting"}>{loading ? "Logging in..." : "Login"}</Button>
                 </CardFooter>
             </fetcher.Form>
         </Card>

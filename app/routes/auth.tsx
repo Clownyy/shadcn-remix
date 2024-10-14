@@ -17,15 +17,8 @@ export const action: ActionFunction = async ({ request }) => {
     const actionType = formData.get("_action");
     const username = formData.get("username");
     const password = formData.get("password");
-    const email = formData.get("email");
-    const firstName = formData.get("firstName")
-    const lastName = formData.get("lastName")
 
-    // if (actionType === "signIn") {
-        return await doAuth(username, password);
-    // } else {
-    //     return await doRegis(username, email, firstName, lastName);
-    // }
+    return await doAuth(username, password);
 }
 
 async function doAuth(username: any, password: any) {
@@ -48,10 +41,8 @@ async function doAuth(username: any, password: any) {
             const header = new Headers();
             header.append("Set-Cookie", cookie);
             header.append("Set-Cookie", state);
-            
-            return redirect('/dashboard', {
-                headers: header
-            })
+
+            return json({ success: 'Login Successfully', status: 200}, { status: 200, headers: header })
         } else {
             return json({ error: response.statusText, status: response.status }, { status: response.status })
         }
@@ -61,10 +52,6 @@ async function doAuth(username: any, password: any) {
         }
         return json({ error: 'Failed to connect to server', status: 500 }, { status: 500 })
     }
-}
-
-async function doRegis(username: any, email: any, firstName: any, lastName: any) {
-    console.log("doRegis: " + username + " " + email + " " + firstName + " " + lastName)
 }
 
 export default function Auth() {

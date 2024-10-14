@@ -26,4 +26,5 @@ export type Response = {
     error: string,
     success: string,
     status: string,
+    data: any,
 }

@@ -1,10 +1,11 @@
 import { UserNav } from "~/components/admin-panel/user-nav";
 import { SheetMenu } from "~/components/admin-panel/sheet-menu";
 import { DarkModeToggle } from "../dark-mode-toggle";
+import { User } from "~/type/types";
 
 interface NavbarProps {
   title: string;
-  userInfo: any;
+  userInfo: User;
 }
 
 export function Navbar({ title, userInfo }: NavbarProps) {

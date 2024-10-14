@@ -9,16 +9,16 @@ import {
     CardTitle,
 } from "~/components/ui/card"
 import { Input } from "~/components/ui/input"
-import { Label } from "~/components/ui/label"
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "../ui/form"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useEffect } from "react";
 import { toast } from "sonner";
+import { Response } from "~/type/types";
 
 export default function ConfirmationForm({ token }: any) {
-    const fetcher = useFetcher()
+    const fetcher = useFetcher<Response>()
 
     const formSchema = z.object({
         password: z.string().regex(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,50}/,

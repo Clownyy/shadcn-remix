@@ -25,6 +25,7 @@ import { PlusIcon } from "lucide-react"
 import { DataTableColumnHeader } from "./header-table"
 import { Switch } from "../ui/switch"
 import { Checkbox } from "../ui/checkbox"
+import { AddOn } from "~/type/interface"
 
 interface DataTableProps<TData, TValue> {
     columns: ColumnDef<TData, TValue>[]
@@ -36,6 +37,7 @@ interface DataTableProps<TData, TValue> {
     onSelectedRows?: any;
     allowAdding?: boolean;
     contextMenu?: boolean;
+    addOns?: AddOn[]
 }
 
 export function DataTable<TData, TValue>({
@@ -48,6 +50,7 @@ export function DataTable<TData, TValue>({
     onSelectedRows,
     allowAdding = true,
     contextMenu,
+    addOns
 }: DataTableProps<TData, TValue>) {
     const tableColumns = React.useMemo(() => {
         if (!allowSelection) return columns
@@ -156,7 +159,9 @@ export function DataTable<TData, TValue>({
                                         key={row.id}
                                         onEdit={onEdit ? () => onEdit(row) : undefined}
                                         onDelete={onDelete ? () => onDelete(row) : undefined}
-                                        contextMenu={contextMenu}>
+                                        contextMenu={contextMenu}
+                                        addOns={addOns}
+                                        rowData={row}>
                                         <TableRow className="h-12"
                                             key={row.id}
                                             data-state={row.getIsSelected() && "selected"}
@@ -173,7 +178,7 @@ export function DataTable<TData, TValue>({
                                 ))
                             ) : (
                                 <TableRow>
-                                    <TableCell colSpan={columns.length} className="h-24 text-center">
+                                    <TableCell colSpan={columns.length + 1} className="h-24 text-center">
                                         No results.
                                     </TableCell>
                                 </TableRow>

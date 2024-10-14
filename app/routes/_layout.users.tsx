@@ -1,4 +1,4 @@
-import { json, LoaderFunction } from "@remix-run/node";
+import { json, LoaderFunction, redirect } from "@remix-run/node";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 import { ContentLayout } from "~/components/admin-panel/content-layout";
 import { Card, CardContent, CardTitle } from "~/components/ui/card";
@@ -17,10 +17,14 @@ type LoaderData = {
     userInfo: User;
     usersData: User[];
 }
+
 export const loader: LoaderFunction = withAuth(async ({ request }) => {
     const cookieHeader = request.headers.get("Cookie");
     const userInfo = await stateCookie.parse(cookieHeader);
 
+    if(userInfo.roleUser != "V_ADMIN") {
+        return redirect("/dashboard")
+    }
     const jwt = await sessionCookie.parse(cookieHeader);
 
     try {

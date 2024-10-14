@@ -12,6 +12,9 @@ import { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
 import { themeSessionResolver } from "./sessions.server";
 import { PreventFlashOnWrongTheme, ThemeProvider, useTheme } from "remix-themes";
 import { Toaster } from "sonner";
+import { LoadingProvider, useLoading } from "./hooks/loading-context";
+import { LoadingSpinner } from "./components/custom/loading";
+import { useEffect } from "react";
 
 export const meta: MetaFunction = () => {
     return [
@@ -36,9 +39,11 @@ export default function AppWithProviders() {
     )
 }
 
-export function App() {
+const RootLayout = () => {
     const data = useLoaderData<typeof loader>()
+    const { loading } = useLoading();
     const [theme] = useTheme();
+
     return (
         <html lang="en" className={clsx(theme)}>
             <head>
@@ -49,11 +54,20 @@ export function App() {
                 <Links />
             </head>
             <body>
+                {loading && <LoadingSpinner />}
                 <Toaster position="top-right" richColors closeButton />
                 <Outlet />
                 <ScrollRestoration />
                 <Scripts />
             </body>
         </html>
+    );
+}
+
+export function App() {
+    return (
+        <LoadingProvider>
+            <RootLayout />
+        </LoadingProvider>
     );
 }

@@ -11,6 +11,8 @@ import { toast } from "sonner";
 import { httpRequest } from "~/lib/httpRequest";
 import { PopupGuest } from "~/components/popup/popup-guest";
 import { Guest, Response, User } from "~/type/types";
+import { AddOn } from "~/type/interface";
+import { MessageCircleMore, Upload } from "lucide-react";
 
 type LoaderData = {
     guestData: Guest[];
@@ -39,6 +41,18 @@ export const columns: ColumnDef<Guest>[] = [
     {
         accessorKey: "phoneNumber",
         header: "Phone Number"
+    }
+]
+
+const handleGenerate = (row: any) => {
+    console.log(row.original)
+}
+
+const addOns: AddOn[] = [
+    {
+        name: 'Generate Invitation',
+        onClick: handleGenerate,
+        icon: MessageCircleMore
     }
 ]
 
@@ -130,6 +144,7 @@ export default function Guests() {
                             onCreate={handleOpenDialog}
                             allowSelection={true}
                             contextMenu={true}
+                            addOns={addOns}
                         />
                         {
                             isDialogGuestOpen &&

@@ -14,7 +14,7 @@ import {
 import { Link, useFetcher, useLocation, useNavigate, useNavigation } from "@remix-run/react";
 import { getMenuList } from "~/lib/menu-list";
 
-interface MenuProps {
+type MenuProps = {
     isOpen: boolean | undefined;
 }
 
