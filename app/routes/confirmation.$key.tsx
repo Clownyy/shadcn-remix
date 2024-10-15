@@ -36,12 +36,11 @@ async function doConfirm(key: any, password: any, confirmPassword: any) {
             const cookie = await sessionCookie.serialize(response.data.id_token);
             const userInfo = await httpRequest(response.data.id_token, process.env.PUBLIC_API!, 'account', 'GET')
             const state = await stateCookie.serialize(userInfo);
+            const header = new Headers();
+            header.append("Set-Cookie", cookie);
+            header.append("Set-Cookie", state);
 
-            return redirect('/dashboard', {
-                headers: {
-                    "Set-Cookie": `${cookie}, ${state}`,
-                }
-            })
+            return json({ success: 'Login Successfully', status: 200}, { status: 200, headers: header })
         } else {
             return json({ error: response.statusText, status: response.status }, { status: response.status })
         }
