@@ -55,7 +55,7 @@ export function PopupBulkGuest({
                         Add multiple guest, put multiple guest on new line or press "Enter"
                     </DialogDescription>
                 </DialogHeader>
-                <Textarea ref={textAreaRef} className="w-full h-[500px] max-h-[80vh] p-4 rounded-md focus:outline-none" />
+                <Textarea ref={textAreaRef} className="w-[250px] max-w-[50vw] h-[500px] max-h-[80vh] p-4 rounded-md focus:outline-none" />
                 <DialogFooter className="sm:justify-end">
                     <Button type="submit" onClick={handleSubmit} variant="default">
                         Save

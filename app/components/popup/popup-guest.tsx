@@ -68,7 +68,7 @@ export function PopupGuest({
                                 </FormItem>
                             )}
                         />
-                        <FormField
+                        {/* <FormField
                             control={form.control}
                             name="phoneNumber"
                             render={({ field }) => (
@@ -84,7 +84,7 @@ export function PopupGuest({
                                     <FormMessage />
                                 </FormItem>
                             )}
-                        />
+                        /> */}
                         <DialogFooter className="sm:justify-end">
                             <DialogClose asChild>
                                 <Button variant="outline">Cancel</Button>
