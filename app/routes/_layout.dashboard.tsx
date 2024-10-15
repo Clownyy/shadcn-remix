@@ -34,7 +34,7 @@ export default function Dashboard() {
         <ContentLayout title="Dashboard" userInfo={userInfo}>
             <Card className="rounded-lg border-none mt-6">
                 <CardContent className="p-6">
-                    <h1>Dashboard</h1>
+                    <h1>Welcome to Vitation Dashboard!</h1>
                 </CardContent>
             </Card>
         </ContentLayout>
