@@ -114,7 +114,7 @@ export function DataTable<TData, TValue>({
                             key={index}
                             size="sm"
                             variant={"ghost"}
-                            className="ml-auto hidden h-8 lg:flex"
+                            className="ml-auto hidden h-8 flex"
                             onClick={onClick}
                         >
                             <Icon size={20} className="mr-2" />
@@ -125,7 +125,7 @@ export function DataTable<TData, TValue>({
                         <Button
                             size="sm"
                             variant={"ghost"}
-                            className="ml-auto hidden h-8 lg:flex"
+                            className="ml-auto hidden h-8 flex"
                             onClick={onCreate}
                         >
                             <PlusIcon size={20} />
