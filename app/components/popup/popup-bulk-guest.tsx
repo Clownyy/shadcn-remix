@@ -52,7 +52,7 @@ export function PopupBulkGuest({
                 <DialogHeader>
                     <DialogTitle>Guest Management</DialogTitle>
                     <DialogDescription>
-                        Management for your guests, click Save Changes when you've done
+                        Add multiple guest, put multiple guest on new line or press "Enter"
                     </DialogDescription>
                 </DialogHeader>
                 <Textarea ref={textAreaRef} className="w-full h-[500px] max-h-[80vh] p-4 rounded-md focus:outline-none" />
