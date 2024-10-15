@@ -1,4 +1,4 @@
-import { MenuIcon, PanelsTopLeft } from "lucide-react";
+import { MenuIcon } from "lucide-react";
 
 import { Button } from "~/components/ui/button";
 import { Menu } from "~/components/admin-panel/menu";
@@ -27,8 +27,20 @@ export function SheetMenu() {
 						asChild
 					>
 						<Link to="/dashboard" className="flex items-center gap-2">
-							<PanelsTopLeft className="w-6 h-6 mr-1" />
-							<SheetTitle className="font-bold text-lg">A</SheetTitle>
+							<img
+								src="/logo-light.png"
+								alt="logo"
+								width={130}
+								height={130}
+								className={"whitespace-nowrap text-lg font-bold transition-[transform,opacity,display] duration-300 ease-in-out dark:hidden"}
+							/>
+							<img
+								src="/logo-dark.png"
+								alt="logo"
+								width={130}
+								height={130}
+								className={"hidden whitespace-nowrap text-lg font-bold transition-[transform,opacity,display] duration-300 ease-in-out dark:block"}
+							/>
 						</Link>
 					</Button>
 				</SheetHeader>

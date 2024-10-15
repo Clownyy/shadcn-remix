@@ -1,5 +1,3 @@
-import { Image, PanelsTopLeft } from "lucide-react";
-
 import { cn } from "~/lib/utils";
 import { useStore } from "~/hooks/use-store";
 import { Button } from "~/components/ui/button";
