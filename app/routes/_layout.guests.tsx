@@ -146,36 +146,35 @@ export default function Guests() {
         const data = row.original;
         let baseurl = 'https://vitation.vercel.app/ines-iqbal?to='
         let url = baseurl + encodeURIComponent(data.guestName)
-        const messageTemplate = `Bismillahirrahmaanirrahiim
+        const messageTemplate = `Assalamualaikum Warrahmatullahi Wabarakatuh
 
-Teruntuk Bapak/Ibu/Saudara/i: **${data.guestName}**
+Dear,
+*${data.guestName}*
 
-Assalamu'alaikum Warahmatullahi Wabarakatuh,
+Dengan memohon Ridha Allah SWT, izinkan kami mengundang Bapak/Ibu/Saudara/i untuk menghadiri Pernikahan kami:
 
-Segala puji bagi Allah yang mempertemukan dua jiwa yang saling mencari, mempertemukan kami 'tuk mengikat janji dalam menjemput ridho ilahi.
+Ines Suraya
+&
+Muhammad Iqbal
 
-Bersamaan dengan datangnya undangan ini, tanpa mengurangi rasa hormat, kami bermaksud mengundang saudara/i untuk hadir dan memberikan doa restu dalam acara pernikahan kami :
+Yang InsyaAllah akan dilaksanakan pada:
+Hari/tanggal    : Minggu, 27 Oktober 2024
+Waktu           : 11.30-15.00 WIB
+Tempat          : Breeze Water Club House CitraLand Cibubur, Mekarsari, Cileungsi, Bogor
 
-**Ines Suraya & Muhammad Iqbal**
+Untuk info lengkap mengenai acara pernikahan kami bisa dilihat di undangan ini:
 
-🔗Untuk info lengkap terkait acara bisa diakses pada tautan berikut:
 ${url}
 
-Merupakan kebahagiaan bagi kami jika bapak/ibu/saudara/i bisa ikut menjadi bagian dalam hari Bahagia kami, serta memberikan doa terbaik untuk kami.
+Merupakan suatu kehormatan dan kebahagiaan bagi kami apabila Bapak/Ibu/Saudara/i berkenan untuk hadir dan memberikan doa restu.
 
-بَارَكَ اللَّهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِى خَيْرٍ
+Mohon maaf perihal undangan hanya di bagikan melalui pesan ini. Terima kasih banyak atas perhatiannya.
 
-Sekian undangan ini kami tulis. Mohon maaf atas keterbatasan kami dalam menyampaikan undangan. 
-Terima kasih.
-
-Wassalamu'alaikum Warahmatullahi Wabarakatuh.
-
-Hormat Kami yang berbahagia,
+Kami yang berbahagia,
 Ines & Iqbal
+#NikahINBAL
 
-==========================
-
-Dikarenakan undangan ini bersifat pribadi, kami memohon dengan kerendahan hati untuk tidak meneruskan undangan ini kepada yang lain.🙏🏻`
+Wassalamualaikum Warrahmatullahi Wabarakatuh`
 
 
         handleOpenDialogMsg(messageTemplate)
