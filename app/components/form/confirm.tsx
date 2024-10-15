@@ -16,9 +16,13 @@ import { z } from "zod";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { Response } from "~/type/types";
+import { useLoading } from "~/hooks/loading-context";
 
 export default function ConfirmationForm({ token }: any) {
     const fetcher = useFetcher<Response>()
+    
+    const { setLoading } = useLoading();
+    const { loading } = useLoading();
 
     const formSchema = z.object({
         password: z.string().regex(/(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,50}/,
@@ -42,6 +46,7 @@ export default function ConfirmationForm({ token }: any) {
         // console.log(data);
         data.key = token.key
         fetcher.submit(data, { method: 'post', action: '/confirmation/'+token.key })
+        setLoading(true)
     }
 
     useEffect(() => {
@@ -50,10 +55,12 @@ export default function ConfirmationForm({ token }: any) {
                 toast.error(fetcher.data.status, {
                     description: fetcher.data.error
                 })
+                setLoading(false)
             } else {
                 toast.success(fetcher.data.status, {
                     description: fetcher.data.success
                 })
+                setLoading(false)
             }
         }
     }, [fetcher])
@@ -104,7 +111,7 @@ export default function ConfirmationForm({ token }: any) {
                         />
                     </CardContent>
                     <CardFooter className="sm:justify-end">
-                        <Button type="submit">Confirm</Button>
+                        <Button type="submit" disabled={!loading}>{loading ? "Submitting..." : "Submit"}</Button>
                     </CardFooter>
                 </form>
             </Form>
