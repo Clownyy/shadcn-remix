@@ -111,7 +111,7 @@ export default function ConfirmationForm({ token }: any) {
                         />
                     </CardContent>
                     <CardFooter className="sm:justify-end">
-                        <Button type="submit" disabled={!loading}>{loading ? "Submitting..." : "Submit"}</Button>
+                        <Button type="submit" disabled={fetcher.state == 'submitting'}>{loading ? "Submitting..." : "Submit"}</Button>
                     </CardFooter>
                 </form>
             </Form>
