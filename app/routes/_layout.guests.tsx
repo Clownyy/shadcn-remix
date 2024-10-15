@@ -174,7 +174,7 @@ Kami yang berbahagia,
 Ines & Iqbal
 #NikahINBAL
 
-Wassalamualaikum Warrahmatullahi Wabarakatuh`
+Wassalamualaikum Warrahmatullahi Wabarakatuh`
 
 
         handleOpenDialogMsg(messageTemplate)
