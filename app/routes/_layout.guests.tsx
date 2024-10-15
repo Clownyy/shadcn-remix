@@ -159,8 +159,8 @@ Muhammad Iqbal
 
 Yang InsyaAllah akan dilaksanakan pada:
 Hari/tanggal    : Minggu, 27 Oktober 2024
-Waktu           : 11.30-15.00 WIB
-Tempat          : Breeze Water Club House CitraLand Cibubur, Mekarsari, Cileungsi, Bogor
+Waktu            : 11.30-15.00 WIB
+Tempat           : Breeze Water Club House CitraLand Cibubur, Mekarsari, Cileungsi, Bogor
 
 Untuk info lengkap mengenai acara pernikahan kami bisa dilihat di undangan ini:
 
