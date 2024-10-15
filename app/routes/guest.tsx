@@ -9,14 +9,22 @@ export const action: ActionFunction = async ({ request }) => {
 
     const formData = await request.formData();
     const actionType = formData.get("actionType");
+    const requestData = formData.get("requestData");
     const id = formData.get("id");
     const guestName = formData.get("guestName");
     const phoneNumber = formData.get("phoneNumber");
 
-    let data = {
-        guestName: guestName,
-        phoneNumber: phoneNumber,
-        userId: userInfo.id
+    let data;
+    if (actionType == "CREATE_BULK") {
+        data = {
+            requestData: JSON.parse(requestData)
+        };
+    } else {
+        data = {
+            guestName: guestName,
+            phoneNumber: phoneNumber,
+            userId: userInfo.id
+        }
     }
 
     switch (actionType) {
@@ -26,17 +34,28 @@ export const action: ActionFunction = async ({ request }) => {
             return await doUpdate(jwt, data, id)
         case "DELETE":
             return await doDelete(jwt, id)
+        case "CREATE_BULK":
+            return await doCreateBulk(jwt, data)
         default:
             return json({ error: "Invalid Action Type", status: 405 }, { status: 405 })
     }
 }
 
+async function doCreateBulk(jwt: any, data: any) {
+    try {
+        let response = await httpRequest(jwt, process.env.PUBLIC_API!, "guests/bulk", "POST", data)
+        return json({ success: `${response.count} Guest successfully created!`, status: 200 }, { status: 200 })
+    } catch (err) {
+        console.log(err?.message)
+        return json({ error: err?.message, status: 500 }, { status: 500 })
+    }
+}
 async function doDelete(jwt: any, id: any) {
     try {
         let response = await httpRequest(jwt, process.env.PUBLIC_API!, "guests", "DELETE", id)
         return json({ success: "Guest successfully deleted!", status: 200 }, { status: 200 })
     } catch (err) {
-        return json({ error: err, status: 500 }, { status: 500 })
+        return json({ error: err?.message, status: 500 }, { status: 500 })
     }
 }
 

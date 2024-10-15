@@ -13,6 +13,9 @@ import { PopupGuest } from "~/components/popup/popup-guest";
 import { Guest, Response, User } from "~/type/types";
 import { AddOn } from "~/type/interface";
 import { MessageCircleMore, Upload } from "lucide-react";
+import { PopupMessage } from "~/components/popup/popup-message";
+import { PopupBulkGuest } from "~/components/popup/popup-bulk-guest";
+import { useLoading } from "~/hooks/loading-context";
 
 type LoaderData = {
     guestData: Guest[];
@@ -44,22 +47,17 @@ export const columns: ColumnDef<Guest>[] = [
     }
 ]
 
-const handleGenerate = (row: any) => {
-    console.log(row.original)
-}
-
-const addOns: AddOn[] = [
-    {
-        name: 'Generate Invitation',
-        onClick: handleGenerate,
-        icon: MessageCircleMore
-    }
-]
-
 export default function Guests() {
     const fetcher = useFetcher<Response>();
     const [isDialogGuestOpen, setIsDialogGuestOpen] = useState(false);
+    const [isDialogMessageOpen, setIsDialogMessageOpen] = useState(false);
+    const [isDialogBulkOpen, setIsDialogBulkOpen] = useState(false);
     const [data, setData] = useState({});
+    const [msg, setMsg] = useState({});
+    const [bulk, setBulk] = useState({});
+
+    const { setLoading } = useLoading();
+    const { loading } = useLoading();
 
     const useData = useLoaderData<LoaderData>();
     const userInfo = useData?.userInfo;
@@ -81,10 +79,35 @@ export default function Guests() {
         document.body.style.pointerEvents = "auto";
     };
 
+    const handleOpenDialogMsg = (data: any) => {
+        setIsDialogMessageOpen(true);
+        document.body.style.pointerEvents = "auto";
+        setMsg(data)
+    };
+
+    const handleCloseDialogMsg = () => {
+        setIsDialogMessageOpen(false);
+        setMsg({});
+        document.body.style.pointerEvents = "auto";
+    };
+
+    const handleOpenDialogBulk = (data: any) => {
+        setIsDialogBulkOpen(true);
+        document.body.style.pointerEvents = "auto";
+        setBulk(data)
+    };
+
+    const handleCloseDialogBulk = () => {
+        setIsDialogBulkOpen(false);
+        setBulk({});
+        document.body.style.pointerEvents = "auto";
+    };
+
     const handleDelete = (row: any) => {
         var data = row.original
         data.actionType = 'DELETE';
         fetcher.submit(data, { method: 'post', action: '/guest' })
+        setLoading(true)
     }
 
     const handleCreate = (data: any) => {
@@ -93,26 +116,86 @@ export default function Guests() {
         } else {
             data.actionType = 'CREATE';
         }
+        if (!data.phoneNumber) {
+            data.phoneNumber = '0'
+        }
         fetcher.submit(data, { method: 'post', action: '/guest' })
         handleCloseDialog();
     }
 
-    // const onSelectedRow = (data: any) => {
-    //     setSelectedRows(data);
-    // }
+    const handleBulkSubmit = (data: any) => {
+        let arrData = []
+        for (let val of data) {
+            let submit = {
+                guestName: val,
+                phoneNumber: "0",
+                userId: userInfo.id
+            }
+            arrData.push(submit)
+        }
+        let dataSubmit = {
+            actionType: 'CREATE_BULK',
+            requestData: JSON.stringify(arrData)
+        }
+        fetcher.submit(dataSubmit, { method: 'POST', action: '/guest' })
+        handleCloseDialogBulk();
+        setLoading(true);
+    }
 
-    // async function generateLink() {
-    //     let data = selectedRows;
-    //     let baseurl = 'http://www.vitation.co.id/ines-iqbal/' //sample
-    //     for(let guest of data) {
-    //         let url = baseurl + encodeURIComponent(guest?.guestName)
-    //     }
-    // }
+    const handleGenerate = (row: any) => {
+        const data = row.original;
+        let baseurl = 'https://vitation.vercel.app/ines-iqbal?to='
+        let url = baseurl + encodeURIComponent(data.guestName)
+        const messageTemplate = `Bismillahirrahmaanirrahiim
 
-    // const isSubmitting = fetcher.state === "submitting";
-    // if(isSubmitting) {
-    //     console.log("loading")
-    // }
+Teruntuk Bapak/Ibu/Saudara/i: **${data.guestName}**
+
+Assalamu'alaikum Warahmatullahi Wabarakatuh,
+
+Segala puji bagi Allah yang mempertemukan dua jiwa yang saling mencari, mempertemukan kami 'tuk mengikat janji dalam menjemput ridho ilahi.
+
+Bersamaan dengan datangnya undangan ini, tanpa mengurangi rasa hormat, kami bermaksud mengundang saudara/i untuk hadir dan memberikan doa restu dalam acara pernikahan kami :
+
+**Ines Suraya & Muhammad Iqbal**
+
+🔗Untuk info lengkap terkait acara bisa diakses pada tautan berikut:
+${url}
+
+Merupakan kebahagiaan bagi kami jika bapak/ibu/saudara/i bisa ikut menjadi bagian dalam hari Bahagia kami, serta memberikan doa terbaik untuk kami.
+
+بَارَكَ اللَّهُ لَكَ وَبَارَكَ عَلَيْكَ وَجَمَعَ بَيْنَكُمَا فِى خَيْرٍ
+
+Sekian undangan ini kami tulis. Mohon maaf atas keterbatasan kami dalam menyampaikan undangan. 
+Terima kasih.
+
+Wassalamu'alaikum Warahmatullahi Wabarakatuh.
+
+Hormat Kami yang berbahagia,
+Ines & Iqbal
+
+==========================
+
+Dikarenakan undangan ini bersifat pribadi, kami memohon dengan kerendahan hati untuk tidak meneruskan undangan ini kepada yang lain.🙏🏻`
+
+
+        handleOpenDialogMsg(messageTemplate)
+    }
+
+    const addOns: AddOn[] = [
+        {
+            name: 'Generate Invitation',
+            onClick: handleGenerate,
+            icon: MessageCircleMore
+        }
+    ]
+
+    const toolbar: AddOn[] = [
+        {
+            name: 'Bulk Guest',
+            onClick: handleOpenDialogBulk,
+            icon: Upload
+        }
+    ]
 
     useEffect(() => {
         if (fetcher.state == "idle" && fetcher.data) {
@@ -120,10 +203,12 @@ export default function Guests() {
                 toast.error(fetcher.data.status, {
                     description: fetcher.data.error
                 })
+                setLoading(false);
             } else {
                 toast.success(fetcher.data.status, {
                     description: fetcher.data.success
                 })
+                setLoading(false);
             }
         }
     }, [fetcher])
@@ -145,10 +230,19 @@ export default function Guests() {
                             allowSelection={true}
                             contextMenu={true}
                             addOns={addOns}
+                            toolbar={toolbar}
                         />
                         {
                             isDialogGuestOpen &&
                             <PopupGuest open={isDialogGuestOpen} onOpen={handleCloseDialog} data={data} handleCreate={handleCreate} />
+                        }
+                        {
+                            isDialogMessageOpen &&
+                            <PopupMessage open={isDialogMessageOpen} onOpen={handleCloseDialogMsg} data={msg} />
+                        }
+                        {
+                            isDialogBulkOpen &&
+                            <PopupBulkGuest open={isDialogBulkOpen} onOpen={handleCloseDialogBulk} data={bulk} handleSave={handleBulkSubmit} />
                         }
                     </CardContent>
                     {/* <CardFooter  className="sm:justify-end">

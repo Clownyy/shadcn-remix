@@ -29,7 +29,7 @@ export function PopupGuest({
     const formSchema = z.object({
         id: z.number(),
         guestName: z.string().min(1, { message: "Guest Name is required" }),
-        phoneNumber: z.string().regex(/^628[1-9][0-9]{6,11}$/, { message: "Invalid phone number. ex: 628***" }),
+        // phoneNumber: z.string().regex(/^628[1-9][0-9]{6,11}$/, { message: "Invalid phone number. ex: 628***" }),
 
     })
     const form = useForm({
@@ -73,7 +73,7 @@ export function PopupGuest({
                             name="phoneNumber"
                             render={({ field }) => (
                                 <FormItem>
-                                    <FormLabel>Phone Number *</FormLabel>
+                                    <FormLabel>Phone Number</FormLabel>
                                     <FormControl>
                                         <Input
                                             placeholder="Phone Number"

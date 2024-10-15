@@ -37,7 +37,8 @@ interface DataTableProps<TData, TValue> {
     onSelectedRows?: any;
     allowAdding?: boolean;
     contextMenu?: boolean;
-    addOns?: AddOn[]
+    addOns?: AddOn[];
+    toolbar?: AddOn[];
 }
 
 export function DataTable<TData, TValue>({
@@ -50,7 +51,8 @@ export function DataTable<TData, TValue>({
     onSelectedRows,
     allowAdding = true,
     contextMenu,
-    addOns
+    addOns,
+    toolbar
 }: DataTableProps<TData, TValue>) {
     const tableColumns = React.useMemo(() => {
         if (!allowSelection) return columns
@@ -106,7 +108,19 @@ export function DataTable<TData, TValue>({
         <div>
             <div className="flex items-center justify-between py-2">
                 &nbsp;
-                <div className="flex gap-2">
+                <div className="flex">
+                    {toolbar?.length ? toolbar.map(({ name, icon: Icon, onClick }, index) => (
+                        <Button
+                            key={index}
+                            size="sm"
+                            variant={"ghost"}
+                            className="ml-auto hidden h-8 lg:flex"
+                            onClick={onClick}
+                        >
+                            <Icon size={20} className="mr-2" />
+                            {name}
+                        </Button>
+                    )) : ""}
                     {allowAdding && (
                         <Button
                             size="sm"
@@ -117,15 +131,6 @@ export function DataTable<TData, TValue>({
                             <PlusIcon size={20} />
                         </Button>
                     )}
-                    {/* {allowExporting && (
-                        <Button
-                            size="sm"
-                            className="ml-auto hidden h-8 lg:flex"
-                            onClick={exportExcel}
-                        >
-                            <Download size={20} className="mr-1" /> Export
-                        </Button>
-                    )} */}
                 </div>
             </div>
             <div className="relative max-h-[60vh] overflow-auto whitespace-nowrap rounded-md border">
