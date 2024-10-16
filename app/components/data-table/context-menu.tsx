@@ -8,7 +8,8 @@ interface ContextMenuWrapperProps {
 	children: ReactNode;
 	onEdit?: () => void;
 	onDelete?: () => void;
-	contextMenu?: boolean;
+	allowEdit?: boolean;
+	allowDelete?: boolean;
 	addOns?: AddOn[]
 	rowData?: any;
 }
@@ -18,7 +19,8 @@ const ContextMenuWrapper: React.FC<ContextMenuWrapperProps> = ({
 	children,
 	onEdit,
 	onDelete,
-	contextMenu = true,
+	allowEdit = false,
+	allowDelete = false,
 	addOns,
 	rowData
 }) => {
@@ -32,7 +34,7 @@ const ContextMenuWrapper: React.FC<ContextMenuWrapperProps> = ({
 		onDelete();
 	};
 
-	if (!contextMenu) {
+	if (!allowEdit && !allowDelete && !addOns) {
 		return (
 			<>{children}</>
 		)
@@ -42,24 +44,28 @@ const ContextMenuWrapper: React.FC<ContextMenuWrapperProps> = ({
 			<ContextMenu modal={false}>
 				<ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
 				<ContextMenuContent>
-					<ContextMenuItem
-						inset
-						onClick={onEdit}
-						className="-ml-6 text-xs">
-						Edit
-						<ContextMenuShortcut>
-							<PencilRuler size={14} />
-						</ContextMenuShortcut>
-					</ContextMenuItem>
-					<ContextMenuItem
-						inset
-						onClick={() => { openDeleteDialog() }}
-						className="-ml-6 text-xs">
-						Delete
-						<ContextMenuShortcut>
-							<Trash2 size={14} />
-						</ContextMenuShortcut>
-					</ContextMenuItem>
+					{allowEdit &&
+						<ContextMenuItem
+							inset
+							onClick={onEdit}
+							className="-ml-6 text-xs">
+							Edit
+							<ContextMenuShortcut>
+								<PencilRuler size={14} />
+							</ContextMenuShortcut>
+						</ContextMenuItem>
+					}
+					{allowDelete &&
+						<ContextMenuItem
+							inset
+							onClick={() => { openDeleteDialog() }}
+							className="-ml-6 text-xs">
+							Delete
+							<ContextMenuShortcut>
+								<Trash2 size={14} />
+							</ContextMenuShortcut>
+						</ContextMenuItem>
+					}
 					{addOns && addOns.map(({ name, icon: Icon, onClick }, index) => (
 						<ContextMenuItem
 							key={index}

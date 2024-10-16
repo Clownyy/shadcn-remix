@@ -1,6 +1,7 @@
 import { ActionFunction, json, LoaderFunction, redirect } from "@remix-run/node";
 import axios from "axios";
 import { toast } from "sonner";
+import { useUserStore } from "~/hooks/use-user-store";
 import { withoutAuth } from "~/lib/auth";
 import { httpRequest } from "~/lib/httpRequest";
 import LoginPage from "~/pages/login";
@@ -42,7 +43,7 @@ async function doAuth(username: any, password: any) {
             header.append("Set-Cookie", cookie);
             header.append("Set-Cookie", state);
 
-            return json({ success: 'Login Successfully', status: 200}, { status: 200, headers: header })
+            return json({ success: 'Login Successfully', status: 200 }, { status: 200, headers: header })
         } else {
             return json({ error: response.statusText, status: response.status }, { status: response.status })
         }

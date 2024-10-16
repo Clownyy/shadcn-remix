@@ -13,15 +13,26 @@ import {
 } from "~/components/ui/tooltip";
 import { Link, useFetcher, useLocation, useNavigate, useNavigation } from "@remix-run/react";
 import { getMenuList } from "~/lib/menu-list";
+import { useUserStore } from "~/hooks/use-user-store";
 
 type MenuProps = {
     isOpen: boolean | undefined;
 }
 
 export function Menu({ isOpen }: MenuProps) {
+    const userInfo = useUserStore((state) => state.userInfo);
+
     const pathname = useLocation();
 
-    const menuList = getMenuList(pathname.pathname);
+    const roleOnUser = userInfo?.roleUser.split(",");
+
+    const listMenu = getMenuList(pathname.pathname);
+    const filterMenuByRoles = (roles: string[] = []) => {
+        if (roles.length === 0) return true;
+        return roleOnUser?.some(role => roles.includes(role));
+    };
+    const filteredGroups = listMenu.filter((group) => filterMenuByRoles(group.roles));
+    const menuList = filteredGroups
 
     const fetcher = useFetcher();
 
@@ -55,7 +66,7 @@ export function Menu({ isOpen }: MenuProps) {
                             ) : (
                                 <p className="pb-2"></p>
                             )}
-                            {menus.map(
+                            {menus.filter((menu) => filterMenuByRoles(menu.roles)).map(
                                 ({ href, label, icon: Icon, active, submenus }, index) =>
                                     submenus.length === 0 ? (
                                         <div className="w-full" key={index}>
@@ -100,7 +111,7 @@ export function Menu({ isOpen }: MenuProps) {
                                                 icon={Icon}
                                                 label={label}
                                                 active={active}
-                                                submenus={submenus}
+                                                submenus={submenus.filter((submenu) => filterMenuByRoles(submenu.roles))}
                                                 isOpen={isOpen}
                                             />
                                         </div>

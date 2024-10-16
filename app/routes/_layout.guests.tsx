@@ -115,6 +115,7 @@ export default function Guests() {
         }
         fetcher.submit(data, { method: 'post', action: '/guest' })
         handleCloseDialog();
+        setLoading(true);
     }
 
     const handleBulkSubmit = (data: any) => {
@@ -208,7 +209,7 @@ Wassalamualaikum Warrahmatullahi Wabarakatuh`
 
     return (
         <>
-            <ContentLayout title="Guests" userInfo={userInfo}>
+            <ContentLayout title="Guests">
                 <Card className="rounded-lg border-none mt-6">
                     <CardContent className="p-6">
                         <CardTitle>
@@ -221,7 +222,9 @@ Wassalamualaikum Warrahmatullahi Wabarakatuh`
                             onDelete={handleDelete}
                             onCreate={handleOpenDialog}
                             allowSelection={true}
-                            contextMenu={true}
+                            allowAdding={true}
+                            allowEdit={true}
+                            allowDelete={true}
                             addOns={addOns}
                             toolbar={toolbar}
                         />

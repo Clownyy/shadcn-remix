@@ -46,7 +46,6 @@ async function doCreateBulk(jwt: any, data: any) {
         let response = await httpRequest(jwt, process.env.PUBLIC_API!, "guests/bulk", "POST", data)
         return json({ success: `${response.count} Guest successfully created!`, status: 200 }, { status: 200 })
     } catch (err) {
-        console.log(err?.message)
         return json({ error: err?.message, status: 500 }, { status: 500 })
     }
 }

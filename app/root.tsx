@@ -15,6 +15,8 @@ import { Toaster } from "sonner";
 import { LoadingProvider, useLoading } from "./hooks/loading-context";
 import { LoadingSpinner } from "./components/custom/loading";
 import { useEffect } from "react";
+import { stateCookie } from "./sessions";
+import { useUserStore } from "./hooks/use-user-store";
 
 export const meta: MetaFunction = () => {
     return [
@@ -25,8 +27,10 @@ export const meta: MetaFunction = () => {
 
 export async function loader({ request }: LoaderFunctionArgs) {
     const { getTheme } = await themeSessionResolver(request)
+    const userInfo = await stateCookie.parse(request.headers.get('cookie'));
     return {
-        theme: getTheme()
+        theme: getTheme(),
+        userInfo: userInfo,
     }
 }
 
@@ -43,6 +47,14 @@ const RootLayout = () => {
     const data = useLoaderData<typeof loader>()
     const { loading } = useLoading();
     const [theme] = useTheme();
+    const userInfo = data.userInfo;
+    const setUserInfo = useUserStore((state) => state.setUserInfo);
+
+    useEffect(() => {
+        if (userInfo) {
+            setUserInfo(userInfo); // Hydrate Zustand once
+        }
+    }, [userInfo, setUserInfo]);
 
     return (
         <html lang="en" className={clsx(theme)}>

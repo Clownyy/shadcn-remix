@@ -5,14 +5,13 @@ import { Link } from "@remix-run/react";
 interface ContentLayoutProps {
 	title: string;
 	children: React.ReactNode;
-	userInfo: any;
 }
 
-export function ContentLayout({ title, children, userInfo }: ContentLayoutProps) {
+export function ContentLayout({ title, children }: ContentLayoutProps) {
 
 	return (
 		<div>
-			<Navbar title={title} userInfo={userInfo} />
+			<Navbar title={title}/>
 			<div className="pt-8 pb-8 px-4 sm:px-8">
 				<Breadcrumb>
 					<BreadcrumbList>

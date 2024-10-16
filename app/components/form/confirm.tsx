@@ -43,7 +43,6 @@ export default function ConfirmationForm({ token }: any) {
     })
 
     const handleSubmit = async (data: any) => {
-        // console.log(data);
         data.key = token.key
         fetcher.submit(data, { method: 'post', action: '/confirmation/'+token.key })
         setLoading(true)

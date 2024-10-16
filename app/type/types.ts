@@ -21,6 +21,14 @@ export type Guest = {
     userId: number
 }
 
+export type Greeting = {
+    id: number,
+    name: string,
+    greeting: string,
+    attendanceConfirmation: boolean,
+    userId: number
+}
+
 export type Response = {
     message: string,
     error: string,

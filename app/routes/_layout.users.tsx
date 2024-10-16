@@ -12,9 +12,9 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { httpRequest } from "~/lib/httpRequest";
 import { Response, User } from "~/type/types";
+import { Badge } from "~/components/ui/badge";
 
 type LoaderData = {
-    userInfo: User;
     usersData: User[];
 }
 
@@ -22,16 +22,16 @@ export const loader: LoaderFunction = withAuth(async ({ request }) => {
     const cookieHeader = request.headers.get("Cookie");
     const userInfo = await stateCookie.parse(cookieHeader);
 
-    if(userInfo.roleUser != "V_ADMIN") {
+    if (userInfo.roleUser != "V_ADMIN") {
         return redirect("/dashboard")
     }
     const jwt = await sessionCookie.parse(cookieHeader);
 
     try {
         const usersData = await httpRequest(jwt, process.env.PUBLIC_API!, 'users');
-        return json({ userInfo, usersData: usersData });
+        return json({ usersData: usersData });
     } catch (error) {
-        return json({ userInfo, usersData: [] });
+        return json({ usersData: [] });
     }
 });
 
@@ -51,6 +51,17 @@ export const columns: ColumnDef<User>[] = [
     {
         accessorKey: "email",
         header: "Email"
+    },
+    {
+        accessorKey: "roleUser",
+        header: "Role User",
+        cell: ({ row }) => {
+            const role = row.original.roleUser
+            if (role === 'V_ADMIN') {
+                return <Badge variant={"success"}>Admin</Badge>
+            }
+            return <Badge variant={"default"}>User</Badge>
+        }
     },
     {
         accessorKey: "activated",
@@ -78,7 +89,6 @@ export default function Users() {
     const [data, setData] = useState({});
 
     const useData = useLoaderData<LoaderData>();
-    const userInfo = useData?.userInfo;
     const usersData = useData?.usersData;
 
     const handleEdit = (row: any) => {
@@ -102,7 +112,7 @@ export default function Users() {
     }
 
     const handleCreate = (data: any) => {
-        if(data.id != null && data.id != 0) {
+        if (data.id != null && data.id != 0) {
             data.actionType = 'UPDATE';
         } else {
             data.actionType = 'CREATE';
@@ -116,9 +126,9 @@ export default function Users() {
     //     console.log("loading")
     // }
 
-	useEffect(() => {
-		if (fetcher.state == "idle" && fetcher.data) {
-            if(fetcher.data.error) {
+    useEffect(() => {
+        if (fetcher.state == "idle" && fetcher.data) {
+            if (fetcher.data.error) {
                 toast.error(fetcher.data.status, {
                     description: fetcher.data.error
                 })
@@ -127,12 +137,12 @@ export default function Users() {
                     description: fetcher.data.success
                 })
             }
-		}
-	}, [fetcher])
+        }
+    }, [fetcher])
 
     return (
         <>
-            <ContentLayout title="Users" userInfo={userInfo}>
+            <ContentLayout title="Users">
                 <Card className="rounded-lg border-none mt-6">
                     <CardContent className="p-6">
                         <CardTitle>
@@ -145,7 +155,9 @@ export default function Users() {
                             onDelete={handleDelete}
                             onCreate={handleOpenDialog}
                             allowSelection={true}
-                            contextMenu={true}
+                            allowAdding={true}
+                            allowEdit={true}
+                            allowDelete={true}
                         />
                         {
                             isDialogOpen &&

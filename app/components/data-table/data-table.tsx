@@ -36,7 +36,8 @@ interface DataTableProps<TData, TValue> {
     allowSelection?: boolean;
     onSelectedRows?: any;
     allowAdding?: boolean;
-    contextMenu?: boolean;
+    allowEdit?: boolean;
+    allowDelete?: boolean;
     addOns?: AddOn[];
     toolbar?: AddOn[];
 }
@@ -50,7 +51,8 @@ export function DataTable<TData, TValue>({
     allowSelection = false,
     onSelectedRows,
     allowAdding = true,
-    contextMenu,
+    allowEdit,
+    allowDelete,
     addOns,
     toolbar
 }: DataTableProps<TData, TValue>) {
@@ -164,7 +166,8 @@ export function DataTable<TData, TValue>({
                                         key={row.id}
                                         onEdit={onEdit ? () => onEdit(row) : undefined}
                                         onDelete={onDelete ? () => onDelete(row) : undefined}
-                                        contextMenu={contextMenu}
+                                        allowEdit={allowEdit}
+                                        allowDelete={allowDelete}
                                         addOns={addOns}
                                         rowData={row}>
                                         <TableRow className="h-12"
@@ -174,7 +177,7 @@ export function DataTable<TData, TValue>({
                                             {row.getVisibleCells().map((cell) => (
                                                 <TableCell key={cell.id} className="whitespace-nowrap overflow-hidden text-ellipsis">
                                                     {typeof cell.getValue() === 'boolean' ?
-                                                        flexRender(<Switch checked={Boolean(cell.getValue())} />, cell.getContext())
+                                                        flexRender(<Checkbox checked={Boolean(cell.getValue())} />, cell.getContext())
                                                         : flexRender(cell.column.columnDef.cell, cell.getContext())}
                                                 </TableCell>
                                             ))}
