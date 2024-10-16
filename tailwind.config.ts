@@ -52,10 +52,6 @@ export default {
 					'5': 'hsl(var(--chart-5))'
 				}
 			},
-			fontFamily: {
-				sans: ['Inter', 'sans-serif'], // Add Inter as the default sans font
-				// You can add other custom fonts here as well
-			},
 		}
 	},
 	plugins: [require("tailwindcss-animate")],

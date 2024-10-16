@@ -41,10 +41,6 @@ export const columns: ColumnDef<Guest>[] = [
         accessorKey: "guestName",
         header: "Guest Name"
     }
-    // {
-    //     accessorKey: "phoneNumber",
-    //     header: "Phone Number"
-    // }
 ]
 
 export default function Guests() {

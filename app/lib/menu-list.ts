@@ -79,14 +79,14 @@ export function getMenuList(pathname: string): Group[] {
 					roles: ['V_ADMIN'],
 					submenus: []
 				},
-				{
-					href: "/account",
-					label: "Account",
-					active: pathname.includes("/account"),
-					icon: Settings,
-					roles: ['V_ADMIN'],
-					submenus: []
-				}
+				// {
+				// 	href: "/account",
+				// 	label: "Account",
+				// 	active: pathname.includes("/account"),
+				// 	icon: Settings,
+				// 	roles: ['V_ADMIN'],
+				// 	submenus: []
+				// }
 			]
 		}
 		// {

@@ -137,8 +137,8 @@ export function DataTable<TData, TValue>({
             </div>
             <div className="relative max-h-[60vh] overflow-auto whitespace-nowrap rounded-md border">
                 <ScrollArea>
-                    <Table className="text-sm text-current">
-                        <TableHeader className="bg-secondary">
+                    <Table className="text-sm">
+                        <TableHeader className="bg-secondary hover:bg-secondary">
                             {table.getHeaderGroups().map((headerGroup) => (
                                 <TableRow key={headerGroup.id}>
                                     {headerGroup.headers.map((header) => {
