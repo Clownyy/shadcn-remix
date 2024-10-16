@@ -26,7 +26,6 @@ const ContextMenuWrapper: React.FC<ContextMenuWrapperProps> = ({
 	const [isDialogOpen, setIsDialogOpen] = useState(false);
 	const openDeleteDialog = () => {
 		setIsDialogOpen(true);
-		document.body.style.pointerEvents = "auto";
 	};
 
 	const confirmDelete = () => {
@@ -40,7 +39,7 @@ const ContextMenuWrapper: React.FC<ContextMenuWrapperProps> = ({
 	}
 	return (
 		<>
-			<ContextMenu>
+			<ContextMenu modal={false}>
 				<ContextMenuTrigger asChild>{children}</ContextMenuTrigger>
 				<ContextMenuContent>
 					<ContextMenuItem

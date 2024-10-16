@@ -88,13 +88,11 @@ export default function Users() {
 
     const handleOpenDialog = () => {
         setIsDialogOpen(true);
-        document.body.style.pointerEvents = "auto";
     };
 
     const handleCloseDialog = () => {
         setIsDialogOpen(false);
         setData({});
-        document.body.style.pointerEvents = "auto";
     };
 
     const handleDelete = (row: any) => {

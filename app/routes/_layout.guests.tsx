@@ -70,37 +70,31 @@ export default function Guests() {
 
     const handleOpenDialog = () => {
         setIsDialogGuestOpen(true);
-        document.body.style.pointerEvents = "auto";
     };
 
     const handleCloseDialog = () => {
         setIsDialogGuestOpen(false);
         setData({});
-        document.body.style.pointerEvents = "auto";
     };
 
     const handleOpenDialogMsg = (data: any) => {
         setIsDialogMessageOpen(true);
-        document.body.style.pointerEvents = "auto";
         setMsg(data)
     };
 
     const handleCloseDialogMsg = () => {
         setIsDialogMessageOpen(false);
         setMsg({});
-        document.body.style.pointerEvents = "auto";
     };
 
     const handleOpenDialogBulk = (data: any) => {
         setIsDialogBulkOpen(true);
-        document.body.style.pointerEvents = "auto";
         setBulk(data)
     };
 
     const handleCloseDialogBulk = () => {
         setIsDialogBulkOpen(false);
         setBulk({});
-        document.body.style.pointerEvents = "auto";
     };
 
     const handleDelete = (row: any) => {
